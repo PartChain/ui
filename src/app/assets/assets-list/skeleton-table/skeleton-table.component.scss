@@ -1,0 +1,85 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.mat-header-cell {
+  @apply font-boldCondensed lg:text-xs sm:text-tiny text-tundora;
+}
+
+/* ---------------------------------------------------------- */
+/* SKELETON */
+/* ---------------------------------------------------------- */
+td {
+  p:empty {
+    animation: loading 1.7s infinite linear;
+    background: #dedfe1;
+    background-image: linear-gradient(to right, #dedfe1 0%, #f2f3f5 20%, #dedfe1 40%, #dedfe1 100%);
+    background-repeat: no-repeat;
+  }
+  p {
+    height: 13px;
+  }
+
+  svg {
+    margin-right: 5px;
+    rect {
+      fill: #dedfe1;
+    }
+  }
+
+  .manufacturer-skeleton {
+    width: 100px;
+
+  }
+
+  .part-name-skeleton {
+    width: 100px;
+  }
+
+  .part-number-skeleton {
+    width: 60px;
+  }
+
+  .serial-number-skeleton {
+    width: 600px;
+  }
+
+  .quality-status-skeleton {
+    width: 30px;
+  }
+
+  .date-skeleton {
+    width: 100px;
+  }
+
+  .components-skeleton {
+    width: 10px;
+  }
+}
+
+
+@keyframes loading {
+  0% {
+    background-position: -100px;
+  }
+
+  100% {
+    background-position: 200px;
+  }
+}
+
+.footer {
+  @apply flex flex-row w-full h-12 bg-white;
+}

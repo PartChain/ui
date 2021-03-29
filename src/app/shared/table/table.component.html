@@ -1,0 +1,124 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div *ngIf="dataSource">
+  <mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef class="select">
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+          [aria-label]="checkboxLabel()"
+        >
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row" class="select">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+          [aria-label]="checkboxLabel(row)"
+        >
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <span>
+      <ng-container [matColumnDef]="column.fieldName" *ngFor="let column of dataColumns">
+        <mat-header-cell class="text-start" *matHeaderCellDef mat-sort-header [ngStyle]="getStyle(column)"
+          >{{ column.label }}
+        </mat-header-cell>
+
+        <mat-cell
+          class="text-start"
+          *matCellDef="let row"
+          [ngStyle]="getStyle(column)"
+          [ngClass]="getClass(column)"
+          (click)="onRowClick(row, column)"
+        >
+          <span [ngSwitch]="column.type">
+            <span *ngSwitchCase="'DATE'">
+              {{ row[column.fieldName] | date: 'MMM d, y, h:mm:ss a' }}
+            </span>
+            <span *ngSwitchCase="'BOOLEAN'">
+              <ng-container *ngIf="row[column.fieldName]; else notChecked">
+                <svg-icon key="check-fill" size="xs" class="text-primary cursor-pointer"></svg-icon>
+              </ng-container>
+              <ng-template #notChecked>
+                -
+              </ng-template>
+            </span>
+            <span *ngSwitchCase="'ARRAY'">
+              <mat-chip-list>
+                <span *ngFor="let element of row[column.fieldName]">
+                  <mat-basic-chip class="chip">{{ element }}</mat-basic-chip>
+                </span>
+              </mat-chip-list>
+            </span>
+            <span *ngSwitchCase="'TABLE'">
+              <svg-icon
+                key="arrow-down-s-line"
+                size="sm"
+                (click)="onDetailGrid(row, column.fieldName, column)"
+                class="detail-table p-0.5 text-tundora"
+                matTooltip="Show child components"
+              >
+              </svg-icon>
+            </span>
+            <span *ngSwitchDefault>
+              {{ row[column.fieldName] }}
+            </span>
+          </span>
+        </mat-cell>
+      </ng-container>
+    </span>
+
+    <mat-header-row class="flex justify-start" *matHeaderRowDef="columnsToShow; sticky: true"> </mat-header-row>
+
+    <mat-row
+      *matRowDef="let row; columns: columnsToShow"
+      matRipple
+      [@itemStatus]="row.status"
+      [ngClass]="{
+        'element-row-expanded': row.isExpanded,
+        'element-row': !row.isExpanded,
+        'selected-row': selection.isSelected(row) || this.selectedAsset === row.serialNumberManufacturer
+      }"
+      [appRowDetail]="row"
+      [rowDetailTemplate]="row.selectedTemplate"
+      [onExpanded]="row.isExpanded"
+    >
+    </mat-row>
+  </mat-table>
+
+  <mat-toolbar *ngIf="isTableReadOnly && this.dataSource.filteredData.length === 0">
+    <div>
+      <span *ngIf="getTableEmptyState()">&nbsp;{{ getTableEmptyState() }}</span>
+    </div>
+  </mat-toolbar>
+</div>
+
+<ng-template #gridTemplate let-element>
+  <div class="mat-row detail-table-container" [@detailExpand] style="overflow: hidden">
+    <app-child-table
+      *ngIf="detailData"
+      [data]="element[element.selectedColumn]"
+      [configuration]="getDetailConfiguration(element.selectedColumn)"
+    >
+    </app-child-table>
+  </div>
+</ng-template>

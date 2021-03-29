@@ -1,0 +1,68 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="introduction-wizard-container">
+  <section class="introduction-wizard-carousel-box" *ngIf="this.activeSlide === 1">
+    <h1>Welcome</h1>
+    <h2>{{ this.userService.getFirstname() }}</h2>
+    <p class="regular-text">
+      PartChain is a blockchain-based system for tracking parts along the supply chain.
+    </p>
+    <p class="regular-text">
+      A high level of transparency across the supplier network enables faster intervention based on recorded event in
+      the supply chain.
+    </p>
+    <p class="regular-text">
+      This saves costs by seamlessly tracking parts and creates trust through clearly defined and secure data access by
+      the companies and persons involved in the process.
+    </p>
+  </section>
+  <section class="introduction-wizard-carousel-box" *ngIf="this.activeSlide === 2">
+    <h1>PartChain UI</h1>
+    <p class="regular-text">
+      This app here is PartChain UI. It allows you to find parts in the supply chain and access the data stored in the
+      blockchain for a particular part.
+    </p>
+    <p class="regular-text">
+      In case of quality problems, parts can be locked and released again after a problem has been solved.
+    </p>
+    <p class="regular-text">
+      The app can be used on the PC as well as on all tablet devices with a browser. It works best with Google Chrome
+      and iOS Safari.
+    </p>
+  </section>
+
+  <div>
+    <div class="mt-4">
+      <app-button [type]="'submit'" [button]="'primary'" [icon]="'arrow-right-line'" (clickEvent)="this.skip()"
+        >Skip</app-button
+      >
+    </div>
+
+    <div class="introduction-wizard-carousel-controls">
+      <div
+        class="introduction-wizard-carousel-control"
+        (click)="this.switchBox(1)"
+        [ngClass]="{ active: this.activeSlide === 1 }"
+      ></div>
+      <div
+        class="introduction-wizard-carousel-control"
+        (click)="this.switchBox(2)"
+        [ngClass]="{ active: this.activeSlide === 2 }"
+      ></div>
+    </div>
+  </div>
+</div>

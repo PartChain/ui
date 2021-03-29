@@ -1,0 +1,74 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--ACL REQUEST MODAL-->
+
+<!--Modal header-->
+<header class="request-modal-header">
+  <h4 class="align-middle">
+    Request Access
+  </h4>
+  <svg-icon key="close-fill" size="sm" class="text-tundora cursor-pointer mt-1" (click)="dialogClose()"> </svg-icon>
+</header>
+
+<mat-divider class="request-modal-info-divider"></mat-divider>
+
+<div *ngIf="this.entities$ | async as entities; else loading">
+  <ng-container *ngIf="!!entities && entities.length > 0; else noRecommendations">
+    <section class="p-4 m-2">
+      <!--Entity-->
+      <p class="component-headline mb-1">Entity</p>
+      <mat-form-field class="w-full" appearance="fill" *ngIf="this.data.btnLabel === 'request'; else update">
+        <mat-select [formControl]="entity" required>
+          <mat-option *ngFor="let entity of entities; let i = index" [value]="entity">
+            {{ entity }}
+          </mat-option>
+        </mat-select>
+        <mat-error class="regular-text" *ngIf="entity.hasError('required')">You must select a value</mat-error>
+      </mat-form-field>
+
+      <mat-error *ngIf="this.hasError">You must select a value</mat-error>
+      <!--Update request-->
+      <ng-template #update>
+        <p class="large-text">
+          Request new access to org <b>{{ this.data.entity }}</b>
+        </p>
+      </ng-template>
+      <!--Comment-->
+      <p class="component-headline mt-3 mb-1">Comment</p>
+      <textarea rows="0" value="comment" #comment placeholder="Write your comment"></textarea>
+      <!--Submit-->
+      <div class="flex justify-end mt-1">
+        <app-button class="w-20" [type]="'submit'" [button]="'primary'" (clickEvent)="this.sendRequest()"
+          >Submit</app-button
+        >
+      </div>
+    </section>
+  </ng-container>
+</div>
+<!--Empty state-->
+<ng-template #noRecommendations>
+  <section class="request-modal-empty-state">
+    <h2>No recommendations</h2>
+    <p class="large-text">
+      There are no available organizations to request access
+    </p>
+  </section>
+</ng-template>
+<!--Loading state-->
+<ng-template #loading>
+  <mat-progress-spinner diameter="55" mode="indeterminate"> </mat-progress-spinner>
+</ng-template>

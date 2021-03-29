@@ -1,0 +1,41 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+button {
+  @apply flex justify-center py-2 border-2 min-w-full relative cursor-pointer focus:outline-none rounded-none min-h-full;
+}
+
+.arrow-icon {
+  position: absolute;
+  right: calc(calc(1rem / 2) - 2px);
+  bottom: 0.45rem;
+}
+
+.icon-right {
+  padding-right: calc(1rem + calc(calc(1rem / 2) - 1px) + calc(1rem / 4));
+}
+
+.btn-primary {
+  @apply bg-blueBayouxShadeLynch border-blueBayouxShadeLynch hover:bg-blueBayouxShadeWaikawaGray;
+}
+
+.btn-secondary {
+  @apply bg-white border-dustyGrayShadeAlto hover:bg-dustyGrayShadeGallery;
+}
+
+.btn-disabled {
+  @apply bg-blueBayouxShadePigeonPost border-blueBayouxShadePigeonPost hover:bg-blueBayouxShadePigeonPost cursor-not-allowed !important;
+}

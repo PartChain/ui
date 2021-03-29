@@ -1,0 +1,89 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.transactions-container {
+  @apply flex flex-col w-full h-full py-6 pl-8 pr-6;
+}
+
+.transactions-content {
+  @apply flex flex-row justify-between w-full mb-2;
+}
+
+.transactions-tree ul,
+.transactions-tree li {
+  @apply bg-white border-t-4 border-dustyGrayShadeWildSand m-0 w-full flex flex-row;
+  list-style-type: none;
+}
+
+.mat-list-base .mat-list-item .mat-list-avatar,
+.mat-list-base .mat-list-option .mat-list-avatar {
+  width: 30px;
+  height: 25px;
+}
+
+.transactions-tree-invisible {
+  display: none;
+}
+
+.mat-tree .mat-tree-node {
+  margin-top: 1px;
+
+  .rootChildBorder {
+    border: 0;
+    padding: 0 0 0 25px;
+  }
+}
+
+.transactions-items-content {
+  @apply flex flex-row items-center;
+}
+
+.transactions-controls {
+  @apply flex flex-col mr-2 mt-3;
+}
+
+.transactions-btn {
+  @apply flex flex-row justify-center mt-4;
+}
+
+.transactions-empty-state {
+  @apply flex flex-row bg-white mt-3 p-3 border-t-2 border-dustyGrayShadeWildSand;
+}
+
+/* ---------------------------------------------------------- */
+/* SKELETON */
+/* ---------------------------------------------------------- */
+p.skeleton:empty {
+  animation: loading 1.7s infinite linear;
+  background: #dedfe1;
+  background-image: linear-gradient(to right, #dedfe1 0%, #f2f3f5 20%, #dedfe1 40%, #dedfe1 100%);
+  background-repeat: no-repeat;
+}
+
+p.skeleton {
+  width: 100%;
+  height: 13px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: -100px;
+  }
+
+  100% {
+    background-position: 200px;
+  }
+}

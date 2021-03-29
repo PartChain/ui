@@ -1,0 +1,93 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--ACL-->
+<div class="acl-container">
+  <!--Acl header-->
+  <header class="acl-header">
+    <h1 class="acl-title">Access control</h1>
+    <section class="acl-request-btn">
+      <app-button [type]="'submit'" [button]="'primary'" (clickEvent)="this.openModal('request')"
+        >Request Access</app-button
+      >
+    </section>
+  </header>
+  <!--Acl history-->
+  <div *ngIf="this.historyObservable | async as history; else tabs">
+    <header class="acl-history-header">
+      <svg-icon key="arrow-left-line" class="text-tundora cursor-pointer" (click)="this.goBack()"></svg-icon>
+      <p class="text-xl large-text ml-2">{{ this.getTargetOrg(history.entities, this.owner) }} history</p>
+    </header>
+    <app-acl-history [history]="history" [owner]="this.owner"> </app-acl-history>
+  </div>
+  <!--Acl tabs-->
+  <ng-template #tabs>
+    <app-tabs (active)="this.getActiveTab($event)">
+      <!--Pending acls-->
+      <app-tab-item label="pending">
+        <app-tab-label>
+          <section class="acl-pending-label">
+            Pending
+            <ng-container *ngIf="this.pending$ | async as numberOfPendingAcls">
+              <p
+                [hidden]="numberOfPendingAcls.length === 0"
+                *ngIf="numberOfPendingAcls.length <= 99; else greater"
+                class="acl-pending-label-badge"
+              >
+                {{ numberOfPendingAcls.length }}
+              </p>
+            </ng-container>
+          </section>
+          <ng-template #greater>
+            <p class="acl-pending-label-badge">+99</p>
+          </ng-template>
+        </app-tab-label>
+        <app-tab-body *ngIf="this.activeTab === 'pending' && this.pending$ | async as pending; else loading">
+          <ng-container *ngIf="pending.length > 0; else emptyState">
+            <app-acl-list [acls]="pending" [owner]="this.owner" [type]="this.activeTab"> </app-acl-list>
+          </ng-container>
+        </app-tab-body>
+      </app-tab-item>
+      <!--Active acls-->
+      <app-tab-item label="active">
+        <app-tab-label>Active</app-tab-label>
+        <app-tab-body *ngIf="this.activeTab === 'active' && this.active$ | async as active; else loading">
+          <ng-container *ngIf="this.active.length > 0; else emptyState">
+            <app-acl-list [acls]="active" [owner]="this.owner" [type]="this.activeTab"> </app-acl-list>
+          </ng-container>
+        </app-tab-body>
+      </app-tab-item>
+      <!--Inactive acls-->
+      <app-tab-item label="inactive">
+        <app-tab-label>Inactive</app-tab-label>
+        <app-tab-body *ngIf="this.activeTab === 'inactive' && this.inactive$ | async as inactive; else loading">
+          <ng-container *ngIf="inactive.length > 0; else emptyState">
+            <app-acl-list [acls]="inactive" [owner]="this.owner" [type]="this.activeTab"> </app-acl-list>
+          </ng-container>
+        </app-tab-body>
+      </app-tab-item>
+    </app-tabs>
+  </ng-template>
+
+  <!--Acl empty state-->
+  <ng-template #emptyState>
+    <app-acl-empty-state [type]="this.activeTab"> </app-acl-empty-state>
+  </ng-template>
+  <!--Acl loading state-->
+  <ng-template #loading>
+    <mat-progress-spinner diameter="55" mode="indeterminate"> </mat-progress-spinner>
+  </ng-template>
+</div>

@@ -1,0 +1,106 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.asset-detail-skeleton-header {
+  @apply flex justify-between m-0 p-0;
+
+  section {
+    @apply mt-1;
+
+    img {
+      cursor: pointer;
+      transform: rotate(180deg);
+    }
+  }
+
+  .asset-detail-skeleton-header-element {
+    display: none;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  section:hover .asset-detail-skeleton-header-element {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* SKELETON */
+/* ---------------------------------------------------------- */
+
+.detail-part-name,
+.detail-manufacturer,
+.date,
+.customer,
+.manufacturer,
+.fields .status:empty {
+  animation: loading 1.7s infinite linear;
+  background: #dedfe1;
+  background-image: linear-gradient(to right, #dedfe1 0%, #f2f3f5 20%, #dedfe1 40%, #dedfe1 100%);
+  background-repeat: no-repeat;
+}
+p {
+  height: 13px;
+}
+
+svg {
+  rect {
+    fill: #dedfe1;
+  }
+}
+
+.detail-manufacturer {
+  width: 213px;
+}
+
+.detail-part-name {
+  width: 213px;
+}
+
+.date {
+  width: 244px;
+  margin-top: 5%;
+}
+
+.customer {
+  width: 344px;
+  margin-top: 1%;
+}
+
+.manufacturer {
+  width: 344px;
+  margin-top: 2%;
+}
+
+.status {
+  width: 344px;
+  margin-top: 2%;
+}
+
+.fields {
+  width: 344px;
+  margin-top: 2%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: -100px;
+  }
+
+  100% {
+    background-position: 200px;
+  }
+}

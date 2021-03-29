@@ -1,0 +1,225 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--ASSET LIST-->
+<div class="assets-list">
+  <div
+    [ngClass]="{
+      'col-span-12': this.selectedAsset === undefined,
+      'sm:col-span-8 lg:col-span-9': this.selectedAsset !== undefined
+    }"
+  >
+    <div class="assets-list-padding">
+      <div class="assets-list-header-row">
+        <!--Asset list header-->
+        <header class="assets-list-header">
+          <h1>{{ this.title }}</h1>
+          <p *ngIf="!this.isTotalLoading" class="regular-text text-tundora ml-2">({{ this.totalOfAssets }})</p>
+          <ng-container *ngIf="this.isTotalLoading">
+            <p class="empty"></p>
+          </ng-container>
+        </header>
+        <div class="assets-list-btn-section">
+          <section class="flex flex-row justify-end">
+            <!--Asset list status button-->
+            <ng-container *appHasRole="['admin', 'quality_manager']">
+              <app-menu-button
+                class="mr-2"
+                [button]="'primary'"
+                [hidden]="this.selectedRows.length === 0"
+                [matMenuTriggerFor]="statusMenu"
+              >
+                Change Status
+              </app-menu-button>
+
+              <mat-menu #statusMenu="matMenu">
+                <button
+                  mat-menu-item
+                  *ngIf="this.queryType === 'own'"
+                  (click)="this.changeStatus(this.selectedRows, 'OK')"
+                  [ngStyle]="{ width: '162px' }"
+                >
+                  <section class="assets-list-menu-items">
+                    <svg height="13" width="13">
+                      <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(61,176,20)' }" />
+                    </svg>
+                    <label class="pl-3">OK</label>
+                  </section>
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="this.changeStatus(this.selectedRows, 'FLAG')"
+                  [ngStyle]="{ width: '162px' }"
+                >
+                  <section class="assets-list-menu-items">
+                    <svg height="13" width="13">
+                      <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(255,173,31)' }" />
+                    </svg>
+                    <label class="pl-3">FLAG</label>
+                  </section>
+                </button>
+                <button
+                  mat-menu-item
+                  *ngIf="this.queryType === 'own'"
+                  (click)="this.changeStatus(this.selectedRows, 'NOK')"
+                  [ngStyle]="{ width: '162px' }"
+                >
+                  <section class="assets-list-menu-items">
+                    <svg height="13" width="13">
+                      <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(210,0,0)' }" />
+                    </svg>
+                    <label class="pl-3">NOK</label>
+                  </section>
+                </button>
+              </mat-menu>
+              <!--Asset list customs report button-->
+              <ng-container *ngIf="this.title === 'My vehicles'">
+                <app-button
+                  class="mr-2"
+                  [type]="'submit'"
+                  [button]="'primary'"
+                  [icon]="'file-pdf-fill'"
+                  (clickEvent)="this.openModal()"
+                  [disable]="this.totalOfAssets === 0"
+                >
+                  Customs Report
+                </app-button>
+              </ng-container>
+            </ng-container>
+            <!--Asset list export button-->
+            <app-menu-button
+              class="mr-2"
+              [button]="'primary'"
+              [disable]="this.totalOfAssets === 0"
+              [matMenuTriggerFor]="menu"
+            >
+              Export
+            </app-menu-button>
+
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="this.exportData('listDataExcel')">
+                <section class="assets-list-menu-items">
+                  <svg-icon class="p0" key="file-excel-line" color="#3db014"></svg-icon>
+                  <label class="pl-3">Excel</label>
+                </section>
+              </button>
+              <button mat-menu-item (click)="this.exportData('listDataPlainCSV')">
+                <section class="assets-list-menu-items">
+                  <svg-icon class="assets-list-menu-csv-item" key="iwp-text-doc-blue"></svg-icon>
+                  <label class="pl-3">CSV</label>
+                </section>
+              </button>
+            </mat-menu>
+            <!--Asset list filter button-->
+            <app-button
+              class="mr-2"
+              [type]="'submit'"
+              [button]="'primary'"
+              [icon]="'filter-2-fill'"
+              (clickEvent)="this.openFilter()"
+            >
+              Filter
+            </app-button>
+          </section>
+        </div>
+      </div>
+      <!--Asset list filters-->
+      <div class="assets-list-table-chips">
+        <mat-chip-list aria-label="Filter selection" *ngIf="this.selectedFilters.length > 0">
+          <mat-chip class="small-text text-xs" *ngFor="let filter of this.selectedFilters; index as i">
+            {{ filter }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <!--Asset list table selection-->
+      <div
+        class="assets-list-table-selection"
+        [ngClass]="{
+          'sm:grid-cols-1 lg:grid-cols-12': this.selectedAsset === undefined,
+          'grid-cols-1': this.selectedAsset !== undefined
+        }"
+      >
+        <section
+          *appHasRole="['admin', 'quality_manager']"
+          class="table-selection"
+          [ngClass]="{
+            'sm:col-span-12 lg:col-span-3': this.selectedAsset === undefined,
+            'col-span-12': this.selectedAsset !== undefined
+          }"
+        >
+          <app-table-selection
+            [formFilters]="this.form"
+            [assetModel]="this.assetFields"
+            [assetsType]="this.queryType"
+            [title]="this.title"
+            [selectedRows]="this.selectedRows.length"
+            [pageLength]="this.pageLength"
+            [totalOfAssets]="this.totalOfAssets"
+            (selectedAssets)="this.getSelectedAssets($event)"
+            (selection)="this.clearSelection()"
+          >
+          </app-table-selection>
+        </section>
+      </div>
+      <!--Asset list table-->
+      <div class="assets-list-table">
+        <div class="w-full" *ngIf="assets$ | async as asset; else skeleton">
+          <ng-container *ngIf="asset.data.length; else noResults">
+            <app-table
+              [dataSet]="asset.data"
+              [tableConfiguration]="assetTable"
+              [removeSelection]="this.removeSelectedRows"
+              [clickedRow]="this.selectedAsset"
+              (selectedRowsEmitter)="this.getSelectedRows($event)"
+            >
+            </app-table>
+          </ng-container>
+          <!--Asset list table pagination-->
+          <ng-container *ngIf="asset.resultLength">
+            <app-pagination
+              [pageSize]="this.pageSize"
+              [pageIndex]="this.pageIndex"
+              [totalOfAssets]="this.totalOfAssets"
+              (loadNextPage)="this.loadNextPage($event)"
+              (loadPreviousPage)="this.loadPreviousPage($event)"
+            >
+            </app-pagination>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Asset list table detail-->
+  <div *ngIf="selectedAsset" class="assets-list-table-details">
+    <section class="assets-list-detail-wrapper-info">
+      <app-asset-detail
+        [serialNumber]="selectedAsset"
+        [assetType]="this.queryType"
+        [title]="this.title"
+        (closeEditPanelEvent)="closeSideBar()"
+      >
+      </app-asset-detail>
+    </section>
+  </div>
+</div>
+<!--Asset list empty state-->
+<ng-template #noResults>
+  <app-table-empty-state [assetsType]="this.queryType"> </app-table-empty-state>
+</ng-template>
+<!--Asset list loading state-->
+<ng-template #skeleton>
+  <app-skeleton-list> </app-skeleton-list>
+</ng-template>
