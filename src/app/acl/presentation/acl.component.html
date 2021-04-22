@@ -1,0 +1,39 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="acl-container">
+  <header class="acl-header">
+    <h1 class="acl-header__title">Access control</h1>
+    <section class="acl-btn-container">
+      <app-button [type]="'submit'" [button]="'primary'" (clickEvent)="this.openModal('request')"
+        >Request Access</app-button
+      >
+    </section>
+  </header>
+  <ng-container *viewContainer="acls$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp"> </ng-container>
+
+  <ng-template #mainTmp let-acl="view">
+    <app-acl-tabs [acls]="acl.data" (updateAccessEmitter)="this.updateAccess($event)"></app-acl-tabs>
+  </ng-template>
+
+  <ng-template #errorTmp let-acl="view">
+    <app-acl-empty-state> </app-acl-empty-state>
+  </ng-template>
+
+  <ng-template #loaderTmp let-acl="view">
+    <app-acl-skeleton></app-acl-skeleton>
+  </ng-template>
+</div>

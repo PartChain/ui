@@ -16,8 +16,8 @@
 
 import { Injectable } from '@angular/core';
 import { UserServiceProperties } from './user.service.properties';
-import { AuthService } from './auth/auth.service';
-import { UserModel } from './user.model';
+import { AuthService } from '../auth/auth.service';
+import { Realm } from '../model/realm.model';
 import { realm } from '../api/api.service.properties';
 
 /**
@@ -76,7 +76,7 @@ export class UserService {
   private firstVisit: boolean;
 
   /**
-   * MspId
+   * Mspid
    *
    * @private
    * @type {string}
@@ -103,7 +103,7 @@ export class UserService {
   private dashboardLoaded: boolean;
 
   /**
-   * @constructor UserService.
+   * @constructor UserService
    * @param {AuthService} authService
    * @memberof UserService
    */
@@ -112,7 +112,7 @@ export class UserService {
   }
 
   /**
-   * Helper method to set user details
+   * User details
    *
    * @return {void}
    * @memberof UserService
@@ -163,7 +163,7 @@ export class UserService {
   }
 
   /**
-   * MspId getter
+   * Mspid getter
    *
    * @return {string}
    * @memberof UserService
@@ -193,7 +193,7 @@ export class UserService {
   }
 
   /**
-   * Dashboard loader getter
+   * Dashboard loaded getter
    *
    * @return {boolean}
    * @memberof UserService
@@ -203,7 +203,7 @@ export class UserService {
   }
 
   /**
-   * Dashboard loader setter
+   * Dashboard loaded setter
    *
    * @return {void}
    * @memberof UserService
@@ -215,12 +215,12 @@ export class UserService {
   /**
    * Org preferences getter
    *
-   * @return {UserModel}
+   * @return {Realm}
    * @memberof UserService
    */
-  public getOrgPreferences(): UserModel {
+  public getOrgPreferences(): Realm {
     const mspId = this.getMspid();
-    const user: UserModel = {} as UserModel;
+    const user: Realm = {} as Realm;
     if (mspId !== 'Lion' && mspId !== '92a2bd') {
       user.assetsTile = 'My components';
       user.componentsTile = 'Other parts';

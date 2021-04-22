@@ -1,0 +1,231 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<app-introduction-wizard
+  *ngIf="this.showIntroduction; else dashboard"
+  [fromDashboard]="true"
+  [class]="this.showIntroduction ? 'wizard' : ''"
+>
+</app-introduction-wizard>
+
+<ng-template #dashboard>
+  <div class="dashboard-container">
+    <app-header [title]="this.title"></app-header>
+
+    <div class="dashboard-first-row-content">
+      <div class="flex flex-row space-x-2">
+        <div class="dashboard-first-row-total-content">
+          <div class="flex">
+            <section class="pt-2">
+              <svg-icon key="car" size="md" class="text-primary"></svg-icon>
+            </section>
+            <section class="dashboard-first-row-total-section">
+              <p class="component-text p-2">Total of my parts</p>
+              <ng-container
+                *viewContainer="stats$ | async; main: mainStatsTmp; error: errorStatsTmp; loading: loaderStatsTmp"
+              >
+              </ng-container>
+              <ng-template #mainStatsTmp let-v="view">
+                <h4 class="pt-1 px-2">{{ v?.data.ownAssetsCount }}</h4>
+              </ng-template>
+              <ng-template #loaderStatsTmp let-v="view">
+                <p class="skeleton"></p>
+              </ng-template>
+              <ng-template #errorStatsTmp let-v="view">
+                <h4 class="pt-1 px-2">0</h4>
+              </ng-template>
+            </section>
+          </div>
+        </div>
+        <div class="dashboard-first-row-total-content">
+          <div class="flex">
+            <section class="pt-2">
+              <svg-icon key="car-components-2" size="md" class="text-primary"></svg-icon>
+            </section>
+            <section class="dashboard-first-row-total-section">
+              <p class="component-text p-2">Total of supplied parts</p>
+              <ng-container
+                *viewContainer="
+                  stats$ | async;
+                  main: mainStatsOtherTmp;
+                  error: errorStatsOtherTmp;
+                  loading: loaderStatsOtherTmp
+                "
+              >
+              </ng-container>
+              <ng-template #mainStatsOtherTmp let-v="view">
+                <h4 class="pt-1 px-2">{{ v?.data.otherAssetsCount }}</h4>
+              </ng-template>
+              <ng-template #loaderStatsOtherTmp let-v="view">
+                <p class="skeleton"></p>
+              </ng-template>
+              <ng-template #errorStatsOtherTmp let-v="view">
+                <h4 class="pt-1 px-2">0</h4>
+              </ng-template>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex">
+        <div class="dashboard-first-row-date-range-content">
+          <form [formGroup]="this.filterForm" (keydown.enter)="this.filter()">
+            <mat-form-field class="mr-6">
+              <input
+                matInput
+                [matDatepicker]="productionDateFrom"
+                placeholder="Start of period"
+                formControlName="productionDateFrom"
+                [max]="this.filterMaxDate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="productionDateFrom"> </mat-datepicker-toggle>
+              <mat-datepicker #productionDateFrom> </mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <input
+                matInput
+                [matDatepicker]="productionDateTo"
+                placeholder="End of period"
+                formControlName="productionDateTo"
+              />
+              <mat-datepicker-toggle matSuffix [for]="productionDateTo"> </mat-datepicker-toggle>
+              <mat-datepicker #productionDateTo> </mat-datepicker>
+            </mat-form-field>
+          </form>
+          <section class="dashboard-first-row-date-range__btn">
+            <app-button class="w-20" [type]="'submit'" [button]="'primary'" (clickEvent)="this.filter()"
+              >Filter
+            </app-button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-graphs-grid">
+      <div class="dashboard-graphs-map-content">
+        <section class="bg-white p-4">
+          <h3 class="mb-4">Number of parts per country</h3>
+          <ng-container
+            *viewContainer="
+              assetsPerCountry$ | async;
+              main: mainPerCountryTmp;
+              error: errorPerCountryTmp;
+              loading: loaderPerCountryTmp
+            "
+          >
+          </ng-container>
+          <ng-template #mainPerCountryTmp let-v="view">
+            <app-map [mapData]="v?.data"></app-map>
+          </ng-template>
+          <ng-template #loaderPerCountryTmp let-v="view">
+            <div class="map-skeleton"></div>
+          </ng-template>
+          <ng-template #errorPerCountryTmp let-v="view">
+            <app-map [mapData]="v?.data"></app-map>
+          </ng-template>
+        </section>
+      </div>
+
+      <div class="dashboard-events-content">
+        <section class="bg-white p-4">
+          <h3 class="mb-4">Events</h3>
+          <ng-container
+            *viewContainer="
+              transactions$ | async;
+              main: mainTransactionsTmp;
+              error: errorTransactionsTmp;
+              loading: loaderTransactionsTmp
+            "
+          >
+          </ng-container>
+          <ng-template #mainTransactionsTmp let-t="view">
+            <app-events [transactions]="t?.data"></app-events>
+          </ng-template>
+          <ng-template #errorTransactionsTmp let-t="view">
+            <section class="events-empty-state">
+              <svg-icon key="information-line" size="xs" class="text-primary"></svg-icon>
+              <p class="regular-text mx-2">Your transaction cart is empty.</p>
+            </section>
+          </ng-template>
+          <ng-template #loaderTransactionsTmp let-t="view">
+            <div class="dashboard-empty-state">
+              <p class="skeleton"></p>
+            </div>
+          </ng-template>
+        </section>
+      </div>
+
+      <div class="dashboard-graphs-content">
+        <div class="lg:mr-4">
+          <section class="bg-white p-4">
+            <h3 class="mb-4">Total of NOK parts</h3>
+            <ng-container
+              *viewContainer="qualityStatus$ | async; main: mainNOKTmp; error: errorNOKTmp; loading: loaderNOKTmp"
+            >
+            </ng-container>
+            <ng-template #mainNOKTmp let-v="view">
+              <ng-container class="h-full" *ngIf="!this.allZero(v?.data); else errorNOKTmp">
+                <app-bar-chart [barChartData]="v?.data"></app-bar-chart>
+              </ng-container>
+            </ng-template>
+            <ng-template #loaderNOKTmp let-v="view">
+              <div class="chart-skeleton"></div>
+            </ng-template>
+            <ng-template #errorNOKTmp let-v="view">
+              <section class="dashboard-empty-state-graphs">
+                <app-empty-state [icon]="'bar-chart-2-fill'" [size]="'xl'">
+                  <p class="large-text mt-10">No available data on the selected period.</p>
+                  <p class="large-text">Please adjust your filter.</p>
+                </app-empty-state>
+              </section>
+            </ng-template>
+          </section>
+        </div>
+
+        <div>
+          <section class="bg-white p-4 sm:mt-3 md:mt- lg:mt-0">
+            <h3 class="mb-4">Number of parts per day</h3>
+            <ng-container
+              *viewContainer="
+                assetsPerDay$ | async;
+                main: mainPerDayTmp;
+                error: errorPerDayTmp;
+                loading: loaderPerDayTmp
+              "
+            >
+            </ng-container>
+            <ng-template #mainPerDayTmp let-v="view">
+              <ng-container *ngIf="v.data; else errorPerDayTmp">
+                <app-line-chart [lineChartData]="v?.data"></app-line-chart>
+              </ng-container>
+            </ng-template>
+            <ng-template #loaderPerDayTmp let-v="view">
+              <div class="chart-skeleton"></div>
+            </ng-template>
+            <ng-template #errorPerDayTmp let-v="view">
+              <section class="dashboard-empty-state-graphs">
+                <app-empty-state [icon]="'line-chart-fill'" [size]="'xl'">
+                  <p class="large-text mt-10">No available data on the selected period.</p>
+                  <p class="large-text">Please adjust your filter.</p>
+                </app-empty-state>
+              </section>
+            </ng-template>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

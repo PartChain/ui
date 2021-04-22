@@ -18,13 +18,13 @@ import { KeycloakService } from 'keycloak-angular';
 import { environment } from '../../environments/environment';
 
 /**
- * Keycloak init function
+ * Keycloak required init function
  *
  * @export
  * @param {KeycloakService} keycloak
- * @return {() => Promise<any>}
+ * @return {(() => Promise<boolean | void>)}
  */
-export function keycloakInit(keycloak: KeycloakService): () => Promise<any> {
+export function keycloakInit(keycloak: KeycloakService): () => Promise<boolean | void> {
   // Set default realm
   let realm = environment.defaultRealm;
 
@@ -46,10 +46,10 @@ export function keycloakInit(keycloak: KeycloakService): () => Promise<any> {
         .item(0)
         .attributes.getNamedItem('href').value = environment.baseUrl + environment.defaultRealm + '/';
 
-      return (): Promise<any> => Promise.resolve();
+      return (): Promise<void> => Promise.resolve();
     }
   }
-  return (): Promise<any> =>
+  return (): Promise<boolean> =>
     keycloak.init({
       config: {
         url: environment.keycloakUrl,

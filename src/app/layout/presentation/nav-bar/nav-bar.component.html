@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<nav class="navbar">
+  <div class="navbar-container">
+    <section class="navbar-content">
+      <div class="navbar-logo-container">
+        <div class="navbar-logo-content cursor-pointer" (click)="this.navigateToHome()">
+          <img class="navbar-logo" src="/assets/images/partchain.svg" />
+          <h3 class="uppercase">Partchain</h3>
+        </div>
+      </div>
+      <div class="md:block">
+        <div class="navbar-menu-container">
+          <p class="small-text bold">v{{ this.version }}</p>
+
+          <!-- Profile dropdown -->
+          <div class="navbar-menu-content">
+            <div (click)="this.expand($event)">
+              <button class="navbar-menu-btn" id="user-menu" aria-haspopup="true">
+                <span class="sr-only">Open user menu</span>
+                <span class="large-text navbar-menu-btn__icon">{{ initials }}</span>
+                <ng-container *ngIf="this.badge$ | async as iconBadge">
+                  <svg
+                    *ngIf="iconBadge !== 0"
+                    [hidden]="iconBadge === 0"
+                    class="navbar-menu-btn__notification"
+                    height="13"
+                    width="13"
+                  >
+                    <circle cx="5.5" cy="5.5" r="5.5" [ngStyle]="{ fill: 'rgb(210,0,0)' }" />
+                  </svg>
+                </ng-container>
+              </button>
+            </div>
+            <div
+              [ngClass]="{
+                'fade-in': this.isExpanded,
+                'fade-out': !this.isExpanded
+              }"
+              class="navbar-menu-items-container"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="user-menu"
+              *ngIf="this.isExpanded"
+            >
+              <section class="flex flex-row p-2">
+                <span class="navbar-menu-items__icon">
+                  <p class="large-text text-center text-white p-2">{{ initials }}</p>
+                </span>
+                <section class="flex flex-col p-1">
+                  <p class="component-headline text-primary break-words">{{ this.user.role }}</p>
+                  <p class="regular-text">{{ this.user.name }}</p>
+                  <p class="small-text break-words">{{ this.user.email }}</p>
+                </section>
+              </section>
+              <mat-divider></mat-divider>
+              <div *appHasRole="['admin']" class="navbar-menu-items">
+                <svg-icon class="ml-2 text-tundora" key="admin-line" size="xs"></svg-icon>
+                <p [routerLink]="['acl']" class="regular-text navbar-menu-items__label" role="menuitem">
+                  Access Control
+                </p>
+                <ng-container *ngIf="this.aclBadge$ | async as aclBadge">
+                  <p
+                    [hidden]="aclBadge === 0"
+                    class="component-headline-small navbar-menu-items__badge"
+                    *ngIf="aclBadge <= 99; else greater"
+                  >
+                    {{ aclBadge }}
+                  </p></ng-container
+                >
+              </div>
+
+              <div *appHasRole="['admin', 'quality_manager']" class="navbar-menu-items">
+                <svg-icon class="ml-2 text-tundora" key="exchange-box-fill" size="xs"></svg-icon>
+                <p [routerLink]="['transactions']" class="regular-text navbar-menu-items__label" role="menuitem">
+                  Transactions
+                </p>
+                <ng-container *ngIf="this.transactionsBadge$ | async as transactionsBadge">
+                  <p
+                    [hidden]="transactionsBadge === 0"
+                    class="component-headline-small navbar-menu-items__badge"
+                    *ngIf="transactionsBadge <= 99; else greater"
+                  >
+                    {{ transactionsBadge }}
+                  </p>
+                </ng-container>
+              </div>
+
+              <div class="navbar-menu-items" (click)="this.logOut()">
+                <svg-icon class="ml-2 text-tundora" key="logout-circle-line" size="xs"></svg-icon>
+                <p class="regular-text navbar-menu-items__label" role="menuitem">Sign Out</p>
+              </div>
+
+              <ng-template #greater>
+                <span class="component-headline-small navbar-menu-items__badge">+99 </span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</nav>

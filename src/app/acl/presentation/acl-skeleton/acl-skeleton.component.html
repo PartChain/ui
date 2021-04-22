@@ -1,0 +1,70 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<app-tabs>
+  <app-tab-item label="pending">
+    <app-tab-label>
+      <section class="pending-acls">
+        <p class="acl-tabs"></p>
+      </section>
+    </app-tab-label>
+    <app-tab-body>
+      <div class="acl-skeleton-container">
+        <div class="acl-skeleton-content">
+          <section class="acl-skeleton-card" *ngFor="let item of this.skeleton">
+            <p></p>
+            <p></p>
+            <p></p>
+          </section>
+        </div>
+        <div class="acl-detail-skeleton-content">
+          <div class="acl-detail-card">
+            <section class="acl-detail-header">
+              <p class="acl-detail-header__title"></p>
+            </section>
+            <mat-divider></mat-divider>
+            <div class="acl-detail-content">
+              <section>
+                <p class="small-text text-dustyGray">ID</p>
+                <p></p>
+              </section>
+              <section>
+                <p class="small-text text-dustyGray">Created date</p>
+                <p></p>
+              </section>
+              <section>
+                <p class="small-text text-dustyGray">Status</p>
+                <p></p>
+              </section>
+              <section>
+                <p class="small-text text-dustyGray">Comment</p>
+                <p></p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-tab-body>
+  </app-tab-item>
+  <app-tab-item>
+    <app-tab-label><p class="acl-tabs"></p></app-tab-label>
+    <app-tab-body> </app-tab-body>
+  </app-tab-item>
+  <app-tab-item>
+    <app-tab-label><p class="acl-tabs"></p></app-tab-label>
+    <app-tab-body> </app-tab-body>
+  </app-tab-item>
+</app-tabs>

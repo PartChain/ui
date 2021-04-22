@@ -15,24 +15,34 @@
  */
 
 import { NgModule } from '@angular/core';
-import { TableComponent } from './table/table.component';
-import { RowDetailDirective } from './table/row.detail.directive';
-import { ChildTableComponent } from './table/child-table/child-table.component';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { AssetsFilterComponent } from './assets-filter/assets-filter.component';
-import { NotificationContainerComponent } from './notifications/notification-container/notification-container.component';
-import { NotificationMessageComponent } from './notifications/notification-message/notification-message.component';
+import { TableComponent } from './components/table/table.component';
+import { RowDetailDirective } from './components/table/row.detail.directive';
+import { ChildTableComponent } from './components/table/child-table/child-table.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { AssetsFilterComponent } from '../assets/presentation/assets-list/assets-filter/assets-filter.component';
+import { NotificationContainerComponent } from './components/notifications/notification-container/notification-container.component';
+import { NotificationMessageComponent } from './components/notifications/notification-message/notification-message.component';
 import { TemplateModule } from './template.module';
-import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
-import { SharedService } from './shared.service';
-import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
-import { HeaderComponent } from './header/header.component';
-import { ButtonComponent } from './button/button.component';
-import { MenuButtonComponent } from './menu-button/menu-button.component';
-import { TooltipDirective } from './tooltip.directive';
+import { SharedService } from './core/shared.service';
+import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
+import { HeaderComponent } from './components/header/header.component';
+import { ButtonComponent } from './components/button/button.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { TooltipDirective } from './directives/tooltip.directive';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { icons } from './shared-icons.module';
-import { IntroductionWizardComponent } from '../introduction/introduction-wizard/introduction-wizard.component';
+import { RoleDirective } from './directives/role.directive';
+import { TabsModule } from './components/tabs/tabs.module';
+import { DestroyService } from './core/destroy.service';
+import { MenuItemComponent } from './components/menu/menu-item/menu-item.component';
+import { ShortenPipe } from './pipes/shorten.pipe';
+import { ViewContainerDirective } from './directives/view-container.directive';
+import { EmptyStateComponent } from './components/empty-state/empty-state.component';
+import { TreeComponent } from './components/tree/tree.component';
+import { TreeService } from './components/tree/tree.service';
+import { AssetFacade } from './abstraction/asset-facade';
+import { AssetState } from './core/asset.state';
+import { AssetService } from './core/asset.service';
 
 /**
  *
@@ -49,15 +59,19 @@ import { IntroductionWizardComponent } from '../introduction/introduction-wizard
     TableComponent,
     RowDetailDirective,
     ChildTableComponent,
-    SpinnerOverlayComponent,
     BreadcrumbsComponent,
     HeaderComponent,
     ButtonComponent,
-    MenuButtonComponent,
+    MenuComponent,
+    MenuItemComponent,
+    TreeComponent,
     TooltipDirective,
-    IntroductionWizardComponent,
+    RoleDirective,
+    ShortenPipe,
+    ViewContainerDirective,
+    EmptyStateComponent,
   ],
-  imports: [TemplateModule, SvgIconsModule.forChild(icons)],
+  imports: [TemplateModule, TabsModule, SvgIconsModule.forChild(icons)],
   exports: [
     ConfirmDialogComponent,
     AssetsFilterComponent,
@@ -66,15 +80,20 @@ import { IntroductionWizardComponent } from '../introduction/introduction-wizard
     TableComponent,
     RowDetailDirective,
     ChildTableComponent,
-    SpinnerOverlayComponent,
     BreadcrumbsComponent,
     HeaderComponent,
     ButtonComponent,
-    MenuButtonComponent,
+    MenuComponent,
+    MenuItemComponent,
+    TreeComponent,
     TooltipDirective,
-    IntroductionWizardComponent,
+    RoleDirective,
+    TabsModule,
+    ShortenPipe,
+    ViewContainerDirective,
+    EmptyStateComponent,
   ],
-  providers: [SharedService],
-  entryComponents: [AssetsFilterComponent, ConfirmDialogComponent, SpinnerOverlayComponent],
+  providers: [SharedService, DestroyService, TreeService, AssetFacade, AssetState, AssetService],
+  entryComponents: [ConfirmDialogComponent],
 })
 export class SharedModule {}

@@ -1,0 +1,105 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div *ngIf="dataSource.data.length > 0; else empty" class="white-box padding">
+  <mat-tree class="col-span-2" [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+    <mat-tree-node
+      *matTreeNodeDef="let node"
+      matTreeNodePadding
+      [ngClass]="{ style: node.childComponents === undefined }"
+    >
+      <li class="mat-tree-node rootChildBorder">
+        <section *ngIf="node.expandable">
+          <button
+            mat-icon-button
+            matTreeNodeToggle
+            [attr.aria-label]="'toggle ' + node.serialNumberCustomer"
+            [hidden]="node.childComponents === undefined"
+          >
+            <svg-icon class="rounded:none" key="{{ this.getExpandedIcon(node) }}" size="xs"> </svg-icon>
+          </button>
+        </section>
+
+        <section *ngIf="node.serialNumberCustomer !== ''; else missing">
+          <a class="ml-1" (click)="getAssetComponent(node.serialNumberCustomer)">
+            <span class="part-name">
+              {{ node.partNameManufacturer }}
+            </span>
+            <span class="serial-number">{{ node.serialNumberCustomer }}</span>
+          </a>
+        </section>
+
+        <ng-template #missing>
+          <p appTooltip [tooltip]="'Missing component'" class="missing-child">
+            {{ node.serialNumberManufacturer }}
+          </p>
+        </ng-template>
+      </li>
+    </mat-tree-node>
+
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+      <li>
+        <div class="mat-tree-node">
+          <section *ngIf="node.expandable">
+            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.serialNumberCustomer">
+              <svg-icon class="rounded:none" key="{{ this.getExpandedIcon(node) }}" size="xs"> </svg-icon>
+            </button>
+          </section>
+          <div>
+            <svg-icon
+              [ngClass]="{
+                success: node.icon === 'checkbox-circle-line',
+                error: node.icon === 'close-circle-line',
+                flag: node.icon === 'flag-line',
+                warning: node.icon === 'error-warning-line'
+              }"
+              key="{{ this.node.icon }}"
+              *ngIf="this.node.icon; else QUALITY"
+            >
+            </svg-icon>
+            <ng-template #QUALITY>
+              <svg-icon
+                [ngClass]="{
+                  success: this.icon[node.qualityStatus] === 'checkbox-circle-line',
+                  error: this.icon[node.qualityStatus] === 'close-circle-line',
+                  flag: this.icon[node.qualityStatus] === 'error-warning-line',
+                  warning: this.icon[node.qualityStatus] === 'flag-line'
+                }"
+                key="{{ this.icon[node.qualityStatus] }}"
+              >
+              </svg-icon>
+            </ng-template>
+          </div>
+          <a class="page-link ml-1" (click)="getAssetComponent(node.serialNumberCustomer)">
+            <span class="part-name">{{ node.partNameManufacturer }}</span>
+            <span class="serial-number">{{ node.serialNumberCustomer | shortenSerialNumber }}</span>
+          </a>
+        </div>
+        <ul>
+          <ng-container matTreeNodeOutlet></ng-container>
+        </ul>
+      </li>
+    </mat-tree-node>
+  </mat-tree>
+</div>
+
+<ng-template #empty>
+  <div class="alert alert-info">
+    <app-empty-state [icon]="'information-line'" [size]="'xs'">
+      <p>This list is empty.</p>
+    </app-empty-state>
+  </div>
+</ng-template>

@@ -1,0 +1,127 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="acl-detail-card" *ngIf="this.acl">
+  <!--Detail header-->
+  <section class="acl-detail-header">
+    <p class="text-xl large-text" *ngIf="this.acl.entities; else noEntity">{{ this.acl.targetOrg }}</p>
+    <ng-template #noEntity>
+      <span>Changed by {{ this.acl.changedBy }}</span>
+    </ng-template>
+    <ng-container *ngIf="this.typeOfDetail === 'list'">
+      <a (click)="this.emitGetHistory(this.acl.entities)"><p>View history</p></a>
+    </ng-container>
+  </section>
+  <mat-divider></mat-divider>
+  <!--Detail content-->
+  <div class="acl-detail-content">
+    <section *ngIf="this.acl.entities">
+      <p class="small-text text-dustyGray">ID</p>
+      <p class="large-text">{{ acl.entities }}</p>
+    </section>
+    <section>
+      <p class="small-text text-dustyGray">Created date</p>
+      <p class="large-text">{{ this.acl.timestamp }}</p>
+    </section>
+    <section>
+      <p class="small-text text-dustyGray">Status</p>
+      <div class="flex flex-row items-center">
+        <svg height="13" width="13">
+          <circle
+            *ngIf="this.acl.status.toLowerCase() === 'active'; else pending"
+            cx="5.5"
+            cy="5.5"
+            r="5.5"
+            [ngStyle]="{ fill: '#0BB759' }"
+          />
+          <ng-template #pending>
+            <circle
+              *ngIf="this.acl.status.toLowerCase() === 'pending'; else inactive"
+              cx="5.5"
+              cy="5.5"
+              r="5.5"
+              [ngStyle]="{ fill: '#FFAD1F' }"
+            />
+          </ng-template>
+          <ng-template #inactive>
+            <circle
+              *ngIf="this.acl.status.toLowerCase() === 'inactive'"
+              cx="5.5"
+              cy="5.5"
+              r="5.5"
+              [ngStyle]="{ fill: '#D8D8D8' }"
+            />
+          </ng-template>
+        </svg>
+        <p class="ml-2 large-text">{{ this.acl.status }}</p>
+      </div>
+    </section>
+    <section *ngIf="this.acl.comment">
+      <p class="small-text text-dustyGray">Comment</p>
+      <div class="acl-detail-content__comment">
+        <p class="large-text">{{ this.acl.comment }}</p>
+      </div>
+    </section>
+    <!--Detail button containers-->
+    <ng-container *ngIf="this.activeTab === 'pending' && this.acl.changedBy !== this.acl.owner">
+      <section class="acl-detail-btn-content">
+        <p class="regular-text text-tundoraShadeNobel col-span-8">*Changed by {{ this.acl.changedBy }}</p>
+        <app-button class="col-span-2" [type]="'submit'" [button]="'secondary'" (clickEvent)="this.denyAccess()"
+          >Deny Access</app-button
+        >
+        <app-button class="col-span-2" [type]="'submit'" [button]="'primary'" (clickEvent)="this.acceptAccess()"
+          >Accept Access</app-button
+        >
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="this.activeTab === 'pending' && this.acl.changedBy === this.acl.owner">
+      <section>
+        <p class="regular-text text-tundoraShadeNobel">*Changed by {{ this.acl.changedBy }}</p>
+        <div class="acl-detail-content__acceptance">
+          <svg-icon key="information-line" class="text-primary"></svg-icon>
+          <p class="regular-text ml-2 mt-0.5">
+            Waiting for
+            {{ this.acl.targetOrg }}
+            acceptance
+          </p>
+        </div>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="this.activeTab === 'active'">
+      <section class="acl-detail-btn-content">
+        <p class="regular-text text-tundoraShadeNobel col-span-10">*Changed by {{ this.acl.changedBy }}</p>
+        <app-button class="col-span-2" [type]="'submit'" [button]="'primary'" (clickEvent)="this.removeAccess()"
+          >Remove Access</app-button
+        >
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="this.activeTab === 'inactive'">
+      <section class="acl-detail-btn-content">
+        <p class="regular-text text-tundoraShadeNobel col-span-10">*Changed by {{ this.acl.changedBy }}</p>
+        <app-button
+          class="col-span-2"
+          [type]="'submit'"
+          [button]="'primary'"
+          (clickEvent)="this.requestAccess('update')"
+          >Update Access</app-button
+        >
+      </section>
+    </ng-container>
+  </div>
+</div>

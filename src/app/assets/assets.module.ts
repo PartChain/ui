@@ -15,28 +15,25 @@
  */
 
 import { NgModule } from '@angular/core';
-import { AssetsComponent } from './assets.component';
-import { VehiclesComponent } from '../vehicles/vehicles.component';
+import { AssetsComponent } from './presentation/assets.component';
+import { OwnAssetsComponent } from './presentation/own-assets/own-assets.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AssetsRouting } from './assets-routing.module';
-import { AssetDetailComponent } from './asset-detail/asset-detail.component';
-import { AssetsListComponent } from './assets-list/assets-list.component';
-import { AssetTimelineComponent } from './asset-detail/asset-timeline/asset-timeline.component';
-import { TreeviewComponent } from './asset-detail/treeview/treeview.component';
-import { AssetSearchComponent } from '../asset-search/asset-search.component';
-import { CustomsReportModalComponent } from '../vehicles/customs-report-modal/customs-report-modal.component';
-import { SkeletonTableComponent } from './assets-list/skeleton-table/skeleton-table.component';
-import { PaginationComponent } from './assets-list/pagination/pagination.component';
-import { TableSelectionComponent } from './assets-list/table-selection/table-selection.component';
-import { AssetParentComponent } from './asset-detail/asset-parent/asset-parent.component';
-import { TableEmptyStateComponent } from './assets-list/table-empty-state/table-empty-state.component';
+import { AssetsRoutingModule } from './assets.routing';
+import { AssetDetailComponent } from './presentation/asset-detail/asset-detail.component';
+import { AssetsListComponent } from './presentation/assets-list/assets-list.component';
+import { AssetTimelineComponent } from './presentation/asset-detail/asset-timeline/asset-timeline.component';
+import { SkeletonTableComponent } from './presentation/assets-list/skeleton-table/skeleton-table.component';
+import { PaginationComponent } from './presentation/assets-list/pagination/pagination.component';
+import { TableSelectionComponent } from './presentation/assets-list/table-selection/table-selection.component';
+import { AssetParentComponent } from './presentation/asset-detail/asset-parent/asset-parent.component';
+import { TableEmptyStateComponent } from './presentation/assets-list/table-empty-state/table-empty-state.component';
 import { TemplateModule } from '../shared/template.module';
 import { SharedModule } from '../shared/shared.module';
-import { AssetDetailSkeletonComponent } from './asset-detail/asset-detail-skeleton/asset-detail-skeleton.component';
+import { AssetDetailSkeletonComponent } from './presentation/asset-detail/asset-detail-skeleton/asset-detail-skeleton.component';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { icons } from './../shared/shared-icons.module';
-import { CoreModule } from '../core/core.module';
+import { AssetsListFacade } from './abstraction/assets-list.facade';
+import { AssetsListState } from './core/assets-list.state';
 
 /**
  *
@@ -47,13 +44,10 @@ import { CoreModule } from '../core/core.module';
 @NgModule({
   declarations: [
     AssetsComponent,
-    VehiclesComponent,
+    OwnAssetsComponent,
     AssetsListComponent,
-    AssetTimelineComponent,
     AssetDetailComponent,
-    TreeviewComponent,
-    AssetSearchComponent,
-    CustomsReportModalComponent,
+    AssetTimelineComponent,
     SkeletonTableComponent,
     PaginationComponent,
     TableSelectionComponent,
@@ -61,15 +55,8 @@ import { CoreModule } from '../core/core.module';
     TableEmptyStateComponent,
     AssetDetailSkeletonComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    TemplateModule,
-    RouterModule.forChild(AssetsRouting),
-    SvgIconsModule.forChild(icons),
-    CoreModule,
-  ],
+  imports: [CommonModule, SharedModule, TemplateModule, AssetsRoutingModule, SvgIconsModule.forChild(icons)],
   exports: [],
-  entryComponents: [AssetTimelineComponent, TreeviewComponent, CustomsReportModalComponent],
+  providers: [AssetsListFacade, AssetsListState],
 })
 export class AssetsModule {}

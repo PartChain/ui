@@ -1,0 +1,88 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ng-container *ngIf="this.history$ | async as history; else tabs">
+  <div *ngIf="!!history">
+    <app-acl-history
+      [history]="history.history"
+      [targetOrg]="history.targetOrg"
+      (resetHistory)="this.resetHistory($event)"
+      class="list-container"
+    >
+    </app-acl-history>
+  </div>
+</ng-container>
+
+<ng-template #tabs>
+  <app-tabs (active)="this.getActiveTab($event)">
+    <!--PENDING ACLS-->
+    <app-tab-item label="pending">
+      <app-tab-label>
+        <section class="pending-acls">
+          Pending
+          <ng-container *ngIf="this.pending">
+            <p
+              [hidden]="this.pending.length === 0"
+              *ngIf="this.pending.length <= 99; else greater"
+              class="pending-acls__badge"
+            >
+              {{ this.pending.length }}
+            </p>
+          </ng-container>
+        </section>
+        <ng-template #greater>
+          <p class="num">+99</p>
+        </ng-template>
+      </app-tab-label>
+      <app-tab-body>
+        <app-acl-list
+          [acls]="this.pending"
+          [activeTab]="'pending'"
+          (getHistory)="this.getHistory($event)"
+          (acceptAccessEmitter)="this.acceptAccess($event)"
+          (denyAccessEmitter)="this.denyAccess($event)"
+        >
+        </app-acl-list>
+      </app-tab-body>
+    </app-tab-item>
+    <!--ACTIVE ACLS-->
+    <app-tab-item label="active">
+      <app-tab-label>Active</app-tab-label>
+      <app-tab-body>
+        <app-acl-list
+          [acls]="this.active"
+          [activeTab]="'active'"
+          (getHistory)="this.getHistory($event)"
+          (removeAccessEmitter)="this.removeAccess($event)"
+        >
+        </app-acl-list>
+      </app-tab-body>
+    </app-tab-item>
+    <!--INACTIVE ACLS-->
+    <app-tab-item label="inactive">
+      <app-tab-label>Inactive</app-tab-label>
+      <app-tab-body>
+        <app-acl-list
+          [acls]="this.inactive"
+          [activeTab]="'inactive'"
+          (getHistory)="this.getHistory($event)"
+          (updateAccessEmitter)="this.requestAccess($event)"
+        >
+        </app-acl-list>
+      </app-tab-body>
+    </app-tab-item>
+  </app-tabs>
+</ng-template>

@@ -21,15 +21,13 @@ import {
   CanActivateChild,
   CanDeactivate,
   CanLoad,
-  Route,
   Router,
   RouterStateSnapshot,
-  UrlSegment,
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { realm } from '../api/api.service.properties';
 import { UserService } from './user.service';
-import { realm } from './../api/api.service.properties';
 
 /**
  *
@@ -48,11 +46,11 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   constructor(private userService: UserService, private router: Router) {}
 
   /**
-   * Can Activate
+   * Can activate route
    *
    * @param {ActivatedRouteSnapshot} next
    * @param {RouterStateSnapshot} state
-   * @return {*}  {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
+   * @return {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
    * @memberof RoleGuard
    */
   canActivate(
@@ -64,11 +62,11 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   }
 
   /**
-   * Can Activate Child
+   * Can activate child
    *
    * @param {ActivatedRouteSnapshot} next
    * @param {RouterStateSnapshot} state
-   * @return {*}  {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
+   * @return {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
    * @memberof RoleGuard
    */
   canActivateChild(
@@ -79,45 +77,35 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   }
 
   /**
-   * Can Deactivate
+   * Can deactivate
    *
-   * @param {unknown} component
-   * @param {ActivatedRouteSnapshot} currentRoute
-   * @param {RouterStateSnapshot} currentState
-   * @param {RouterStateSnapshot} [nextState]
-   * @return {*}  {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
+   * @return {(Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree)}
    * @memberof RoleGuard
    */
-  canDeactivate(
-    component: unknown,
-    currentRoute: ActivatedRouteSnapshot,
-    currentState: RouterStateSnapshot,
-    nextState?: RouterStateSnapshot,
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canDeactivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return true;
   }
 
   /**
    * Can load
    *
-   * @param {Route} route
-   * @param {UrlSegment[]} segments
-   * @return {*}  {(Observable<boolean> | Promise<boolean> | boolean)}
+   * @return {(Observable<boolean> | Promise<boolean> | boolean)}
    * @memberof RoleGuard
    */
-  canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(): Observable<boolean> | Promise<boolean> | boolean {
     return true;
   }
 
   /**
-   * Validate user role
+   * Validate the user role
    *
    * @param {ActivatedRouteSnapshot} route
-   * @param {*} url
+   * @param {string} url
    * @return {boolean}
    * @memberof RoleGuard
    */
-  validateUserRole(route: ActivatedRouteSnapshot, url: any): boolean {
+  validateUserRole(route: ActivatedRouteSnapshot, url: string): boolean {
+    console.log(url);
     const roles: string[] = this.userService.getRoles();
     const hasSomeRole: boolean = route.data.role.some((role: string) => roles.includes(role));
     if (route.data.role && !hasSomeRole) {

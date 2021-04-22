@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="acl-list-container" *ngIf="this.acls.length > 0; else emptyState">
+  <div class="acl-list-content">
+    <section
+      *ngFor="let acl of this.acls; let i = index"
+      [ngClass]="{
+        active: acl.status.toLocaleLowerCase() === 'active',
+        pending: acl.status.toLocaleLowerCase() === 'pending',
+        inactive: acl.status.toLocaleLowerCase() === 'inactive'
+      }"
+      class="acl-list-card"
+      (click)="this.getAcl(i)"
+    >
+      <p class="text-xl large-text">{{ acl.targetOrg }}</p>
+      <p class="large-text">ID: {{ acl.entities }}</p>
+      <p class="small-text text-dustyGray mt-2">Created at {{ acl.timestamp }}</p>
+    </section>
+  </div>
+
+  <div class="acl-detail-content">
+    <app-acl-detail
+      [acl]="this.acl"
+      [owner]="this.acl.owner"
+      [activeTab]="this.activeTab"
+      [typeOfDetail]="'list'"
+      (getHistory)="this.emitGetHistory($event)"
+      (acceptAccessEmitter)="this.acceptAccess($event)"
+      (denyAccessEmitter)="this.denyAccess($event)"
+      (removeAccessEmitter)="this.removeAccess($event)"
+      (updateAccessEmitter)="this.requestAccess($event)"
+    >
+    </app-acl-detail>
+  </div>
+</div>
+<ng-template #emptyState>
+  <app-acl-empty-state [type]="this.activeTab"> </app-acl-empty-state>
+</ng-template>

@@ -1,0 +1,245 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="assets-list-container">
+  <div
+    [ngClass]="{
+      'col-span-12': !(this.selectedAsset$ | async),
+      'sm:col-span-8 lg:col-span-9': this.selectedAsset$ | async
+    }"
+  >
+    <div class="assets-list-content">
+      <!--Table header actions-->
+      <div class="header">
+        <header class="header__title">
+          <h1>{{ this.title }}</h1>
+          <ng-container
+            *viewContainer="assets$ | async; main: mainTotalTmp; error: errorTotalTmp; loading: loaderTotalTmp"
+          >
+          </ng-container>
+          <ng-template #mainTotalTmp let-total="view">
+            <p class="regular-text text-tundora ml-2">({{ this.totalOfAssets$ | async }})</p>
+          </ng-template>
+          <ng-template #loaderTotalTmp let-total="view">
+            <p class="empty"></p>
+          </ng-template>
+          <ng-template #errorTotalTmp let-total="view">
+            <p class="regular-text text-tundora ml-2">0</p>
+          </ng-template>
+        </header>
+
+        <div class="header__actions">
+          <section class="flex flex-row justify-end">
+            <ng-container *appHasRole="['admin', 'quality_manager']">
+              <!--CHANGE STATUS MENU-->
+              <app-menu-item
+                class="mr-2"
+                [menuFor]="status"
+                [button]="'secondary'"
+                [disable]="(this.selectedRows$ | async).length === 0"
+                ><span>Change Status</span></app-menu-item
+              >
+              <ng-template #status>
+                <app-menu [ngStyle]="{ width: '144px' }">
+                  <app-menu-item *ngIf="this.queryType === 'own'">
+                    <section class="menu-items" (click)="this.changeStatus('OK')">
+                      <svg height="13" width="13">
+                        <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(61,176,20)' }" />
+                      </svg>
+                      <label class="pl-3">OK</label>
+                    </section>
+                  </app-menu-item>
+                  <app-menu-item>
+                    <section class="menu-items" (click)="this.changeStatus('FLAG')">
+                      <svg height="13" width="13">
+                        <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(255,173,31)' }" />
+                      </svg>
+                      <label class="pl-3">FLAG</label>
+                    </section>
+                  </app-menu-item>
+                  <app-menu-item *ngIf="this.queryType === 'own'">
+                    <section class="menu-items" (click)="this.changeStatus('NOK')">
+                      <svg height="13" width="13">
+                        <circle cx="6.5" cy="6.5" r="6.5" [ngStyle]="{ fill: 'rgb(210,0,0)' }" />
+                      </svg>
+                      <label class="pl-3">NOK</label>
+                    </section>
+                  </app-menu-item>
+                </app-menu>
+              </ng-template>
+            </ng-container>
+
+            <ng-container>
+              <!--EXPORT MENU-->
+              <app-menu-item
+                class="mr-2"
+                [menuFor]="export"
+                [button]="'secondary'"
+                [disable]="!(this.totalOfAssets$ | async)"
+                ><span>Export</span></app-menu-item
+              >
+              <ng-template #export>
+                <app-menu>
+                  <app-menu-item [menuFor]="tableData">
+                    <section class="flex items-center space-x-2">
+                      <label class="mr-6">Table data</label>
+                      <svg-icon size="xs" class="p0" key="arrow-right-s-line"></svg-icon>
+                    </section>
+                  </app-menu-item>
+                  <app-menu-item *ngIf="this.title === 'My vehicles'" [menuFor]="customsReport">
+                    <section class="flex items-center">
+                      <label class="mr-1">Customs report</label>
+                      <svg-icon size="xs" class="p0" key="arrow-right-s-line"></svg-icon>
+                    </section>
+                  </app-menu-item>
+                </app-menu>
+              </ng-template>
+
+              <ng-template #tableData>
+                <app-menu>
+                  <app-menu-item>
+                    <section class="menu-items" (click)="this.exportData('listDataExcel')">
+                      <svg-icon size="xs" class="p0" key="file-excel-line" color="#3db014"></svg-icon>
+                      <label class="pl-3">Excel</label>
+                    </section>
+                  </app-menu-item>
+                  <app-menu-item>
+                    <section class="menu-items" (click)="this.exportData('listDataPlainCSV')">
+                      <svg-icon size="xs" class="menu-items__csv" key="iwp-text-doc-blue"></svg-icon>
+                      <label class="pl-3">CSV</label>
+                    </section>
+                  </app-menu-item>
+                </app-menu>
+              </ng-template>
+              <ng-template #customsReport>
+                <app-menu>
+                  <app-menu-item>
+                    <section class="menu-items" (click)="this.exportData('customsReportExcel')">
+                      <svg-icon size="xs" class="p0" key="file-excel-line" color="#3db014"></svg-icon>
+                      <label class="pl-3">Excel</label>
+                    </section>
+                  </app-menu-item>
+                  <app-menu-item>
+                    <section class="menu-items" (click)="this.exportData('CustomsReportCSV')">
+                      <svg-icon size="xs" class="menu-items__csv" key="iwp-text-doc-blue"></svg-icon>
+                      <label class="pl-3">CSV</label>
+                    </section>
+                  </app-menu-item>
+                </app-menu>
+              </ng-template>
+            </ng-container>
+
+            <app-button
+              class="mr-2"
+              size="xs"
+              [type]="'submit'"
+              [button]="'primary'"
+              [icon]="'filter-2-fill'"
+              (clickEvent)="this.openFilter()"
+            >
+              Filter
+            </app-button>
+          </section>
+        </div>
+      </div>
+      <!--Table filters-->
+      <div class="table-chips" *ngIf="this.filters$ | async as filters">
+        <mat-chip-list aria-label="Filter selection" *ngIf="filters.length > 0">
+          <mat-chip class="small-text text-xs" *ngFor="let filter of filters; index as i">
+            {{ filter.key }}: {{ filter.value }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <!--Table selection-->
+      <div
+        *appHasRole="['admin', 'quality_manager']"
+        class="table-selection-container"
+        [ngClass]="{
+          'sm:grid-cols-1 lg:grid-cols-12': !(this.selectedAsset$ | async),
+          'grid-cols-1': this.selectedAsset$ | async
+        }"
+      >
+        <ng-container *ngIf="this.selectedRows$ | async as selectedRows">
+          <app-table-selection
+            [title]="this.title"
+            [selectedRows]="selectedRows"
+            [totalOfAssets]="this.totalOfAssets$ | async"
+            [loadingComplete]="this.loading$ | async"
+            (getAllAssets)="this.getAllAssets($event)"
+            (selection)="this.clearSelection()"
+          >
+          </app-table-selection>
+        </ng-container>
+      </div>
+      <!--Table-->
+      <div class="table">
+        <div class="w-full">
+          <ng-container *viewContainer="assets$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp">
+          </ng-container>
+        </div>
+        <ng-template #mainTmp let-v="view">
+          <ng-container *ngIf="v.data.data.length > 0; else noResults">
+            <app-table
+              [dataSet]="v.data.data"
+              [tableConfiguration]="assetTable"
+              [clickedRow]="this.selectedAsset$ | async"
+              [removeSelection]="this.removeSelectedRows"
+              (selectedRowsEmitter)="this.getSelectedRows($event)"
+            >
+            </app-table>
+          </ng-container>
+
+          <ng-container *ngIf="this.pagination$ | async as pagination">
+            <app-pagination
+              [pagination]="pagination"
+              (loadNextPage)="this.loadNextPage($event)"
+              (loadPreviousPage)="this.loadPreviousPage($event)"
+            >
+            </app-pagination>
+          </ng-container>
+        </ng-template>
+
+        <ng-template #errorTmp let-v="view">
+          <app-table-empty-state [assetsType]="this.queryType"> </app-table-empty-state>
+        </ng-template>
+
+        <ng-template #loaderTmp let-v="view">
+          <app-skeleton-list> </app-skeleton-list>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <!--Table details-->
+  <div *ngIf="this.selectedAsset$ | async as selectedAsset" class="table-details">
+    <section class="table-details__wrapper">
+      <app-asset-detail
+        [serialNumber]="selectedAsset"
+        [assetType]="this.queryType"
+        [title]="this.title"
+        (closeEditPanelEvent)="closeSideBar()"
+      >
+      </app-asset-detail>
+    </section>
+  </div>
+</div>
+
+<ng-template #noResults>
+  <app-table-empty-state [assetsType]="this.queryType"> </app-table-empty-state>
+</ng-template>
+
+<ng-template #skeleton>
+  <app-skeleton-list> </app-skeleton-list>
+</ng-template>

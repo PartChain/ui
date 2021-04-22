@@ -1,0 +1,41 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="pagination" *ngIf="!!this.pagination">
+  <section class="flex flex-end items-center">
+    <p class="small-text align-middle pl-0.5">
+      {{ this.pagination.pageIndex }} - {{ this.pagination.pageSize }} of {{ this.pagination.total }}
+    </p>
+    <div class="flex flex-row space-x-1 m-2 p-1">
+      <svg-icon
+        class="cursor-pointer mr-4"
+        key="arrow-left-s-line"
+        size="sm"
+        (click)="previousPage()"
+        [ngClass]="{ pagination__limit: this.pagination.pageIndex === 1 }"
+      >
+      </svg-icon>
+      <svg-icon
+        class="cursor-pointer mr-4"
+        key="arrow-right-s-line"
+        size="sm"
+        (click)="nextPage()"
+        [ngClass]="{ pagination__limit: this.pagination.pageSize === this.pagination.total }"
+      >
+      </svg-icon>
+    </div>
+  </section>
+</div>

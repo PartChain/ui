@@ -1,0 +1,208 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="flex flex-col w-full h-full py-6 pl-8 pr-6">
+  <app-header [title]="this.title"></app-header>
+  <div class="flex flex-row my-4">
+    <form class="w-full">
+      <mat-form-field class="flex flex-row">
+        <mat-label [ngStyle]="{ color: '#c2c2c2' }">Search by serial number customer</mat-label>
+        <input matInput #serialNumber />
+      </mat-form-field>
+    </form>
+  </div>
+
+  <ng-container *viewContainer="asset$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp"> </ng-container>
+
+  <ng-template #mainTmp let-v="view">
+    <section class="asset-search-breadcrumb-container">
+      <ol class="asset-search-breadcrumb">
+        <li *ngFor="let asset of this.breadcrumb$ | async; let i = index">
+          <span (click)="this.getSelectedAsset(asset, i)">
+            {{ asset.partNameManufacturer }}
+          </span>
+        </li>
+      </ol>
+    </section>
+    <ng-container *ngIf="!this.isEmpty(v?.data); else errorTmp">
+      <!--Asset detail-->
+      <div class="asset-search-detail-container">
+        <div class="col-span-9">
+          <h3>Detail</h3>
+          <div class="asset-search-detail-content">
+            <div class="bg-white col-span-2">
+              <section class="flex flex-col items-center justify-center p-4 h-full">
+                <svg-icon key="{{ this.getIcon(v.data) }}" size="xl" class="text-primary"></svg-icon>
+                <h5 class="uppercase mt-2 text-center">{{ v.data.manufacturer }}</h5>
+                <h5 class="ml-1">{{ v.data.partNameManufacturer }}</h5>
+                <p class="regular-text">{{ v.data.status }}</p>
+                <p class="small-text">{{ v.data.productionDateGmt }}</p>
+              </section>
+            </div>
+
+            <div class="asset-search-detail-column">
+              <section class="col-span-5 p-4">
+                <!--Asset detail customer-->
+                <ng-container>
+                  <p class="component-headline uppercase mb-2">Customer</p>
+                  <p class="regular-text">Part Number: {{ v.data.partNumberCustomer }}</p>
+                  <div class="flex flex-row mt-1">
+                    <p class="regular-text mb-2">
+                      Serial Number:
+                      {{ v.data.serialNumberCustomer | shortenSerialNumber }}
+                    </p>
+                    <svg-icon
+                      key="file-copy-line"
+                      size="xs"
+                      class="text-tundora ml-2 cursor-pointer"
+                      (click)="this.copyToClipboard(v.data.serialNumberCustomer)"
+                    ></svg-icon>
+                  </div>
+                </ng-container>
+                <!--Asset detail manufacturer-->
+                <ng-container>
+                  <p class="component-headline uppercase mb-2">
+                    Manufacturer
+                  </p>
+                  <p class="regular-text">Part Number: {{ v.data.partNumberManufacturer }}</p>
+                  <div class="flex flex-row mt-1 mb-1">
+                    <p class="regular-text">
+                      Serial Number:
+                      {{ v.data.serialNumberManufacturer | shortenSerialNumber }}
+                    </p>
+                    <svg-icon
+                      key="file-copy-line"
+                      size="xs"
+                      class="text-tundora ml-2 cursor-pointer"
+                      (click)="this.copyToClipboard(v.data.serialNumberManufacturer)"
+                    ></svg-icon>
+                  </div>
+                  <p class="regular-text mb-1" *ngIf="v.data.manufacturerPlant; else noPlant">
+                    Plant: {{ v.data.manufacturerPlant }}
+                  </p>
+                  <p class="regular-text mb-1" *ngIf="v.data.manufacturerLine; else noLine">
+                    Line: {{ v.data.manufacturerLine }}
+                  </p>
+                  <ng-template #noLine>
+                    <p class="regular-text mb-1">Line: No information available</p>
+                  </ng-template>
+                  <ng-template #noPlant>
+                    <p class="regular-text mb-1">Plant: No information available</p>
+                  </ng-template>
+                </ng-container>
+              </section>
+
+              <div class="col-span-5">
+                <!--Asset detail quality status-->
+                <section class="p-4">
+                  <p class="component-headline uppercase mb-2">
+                    Quality Status
+                  </p>
+                  <div class="flex flex-row">
+                    <svg-icon
+                      key="{{ v.data.icon }}"
+                      size="xs"
+                      [ngClass]="{
+                        success: v.data.icon === 'checkbox-circle-line',
+                        error: v.data.icon === 'close-circle-line',
+                        warning: v.data.icon === 'error-warning-line',
+                        flag: v.data.icon === 'flag-line'
+                      }"
+                    ></svg-icon>
+                    <p class="regular-text ml-1">
+                      {{ v.data.qualityStatus }}
+                    </p>
+                  </div>
+                </section>
+                <!--Asset detail serial number type-->
+                <section class="px-4">
+                  <p class="component-headline uppercase mb-2">Serial Number Type</p>
+                  <p class="regular-text mb-1">
+                    {{ v.data.serialNumberType }}
+                  </p>
+                </section>
+                <!--Asset detail custom fields-->
+                <div class="px-4 py-3">
+                  <p class="component-headline uppercase">Custom Fields</p>
+                  <div class="asset-search-custom-field-chips" *ngIf="this.customFields; else noFields">
+                    <mat-chip-list aria-label="Filter selection">
+                      <mat-chip class="small-text text-xs" *ngFor="let field of this.customFields; index as i">
+                        {{ field.field }}: {{ field.value }}
+                      </mat-chip>
+                    </mat-chip-list>
+                  </div>
+                  <ng-template #noFields>
+                    <div>
+                      <p class="regular-text mt-2">No fields stored</p>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3>Child Components</h3>
+          <section class="bg-white p-4 mt-3">
+            <!--Asset detail child components-->
+            <app-tree *ngIf="v.data" [treeViewAssetData]="v.data" (assetEvent)="getChild($event)"> </app-tree>
+          </section>
+        </div>
+
+        <div class="col-span-3">
+          <h3>Parents</h3>
+          <section class="bg-white p-4 mt-3">
+            <div *ngIf="parent$ | async as parentAsset; else skeleton">
+              <ng-container *ngIf="!!parentAsset.parents && parentAsset.parents.length > 0; else noParent">
+                <div *ngFor="let parent of parentAsset.parents; let i = index">
+                  <section class="flex flex-col my-2">
+                    <a (click)="this.getParentAsset(parent.serialNumberCustomer)">
+                      <p>
+                        Part Name: <strong>{{ parent.partNameManufacturer }}</strong>
+                      </p>
+                      <p>
+                        Serial Number: <strong>{{ parent.serialNumberCustomer | shortenSerialNumber }}</strong>
+                      </p>
+                    </a>
+                  </section>
+                </div>
+              </ng-container>
+            </div>
+            <ng-template #noParent>
+              <div class="parent-grid">
+                <section class="flex flex-col my-2">
+                  <p class="regular-text">No parents available</p>
+                </section>
+              </div>
+            </ng-template>
+            <ng-template #skeleton>
+              <div class="parent-grid">
+                <p class="skeleton"></p>
+              </div>
+            </ng-template>
+          </section>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #loaderTmp let-v="view"> <app-asset-search-skeleton></app-asset-search-skeleton> </ng-template>
+
+  <ng-template #errorTmp let-v="view">
+    <div class="asset-search-empty-state">
+      <svg-icon class="text-primary" key="search-line" size="xxl"></svg-icon>
+      <h2 class="mt-6">PART NOT FOUND</h2>
+    </div>
+  </ng-template>
+</div>

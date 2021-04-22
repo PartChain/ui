@@ -1,6 +1,6 @@
 <h1>PartChain User Interface</h1>
 
-> __Note:__ This repository is still under active development! Breaking changes are possible, and we are working on improving code quality.
+> **Note:** This repository is still under active development! Breaking changes are possible, and we are working on improving code quality.
 
 ![Alt text](src/assets/svg/partchain.svg?raw=true 'PartChain')
 
@@ -33,7 +33,7 @@ If you're using angular for the first time, run `npm install -g @angular/cli` to
 
 This project was generate with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.4.
 
-Find [here](readme/configuration.md) documentation to support you during the development and configuration of the app.
+Find [here](docs/configuration.md) documentation to support you during the development and configuration of the app.
 
 #### Login Process
 
@@ -61,14 +61,12 @@ export const environment = {
 
 These guidelines are define to maintain homogeneous code quality and style. It can be adapted as the need arises.
 
-New and old developers should regularly review this [guide](readme/dev-guidelines.md) to update it as new points emerge and to sync themselves with the latest changes.
+New and old developers should regularly review this [guide](docs/guidelines.md) to update it as new points emerge and to sync themselves with the latest changes.
 
-#### UI Styling & Components
+#### UI Components
 
-Find [here](readme/components.md) the documentation regarding the libraries used for styling and all the available ui components.
+Find [here](docs/components.md) the documentation with all the available ui components.
 
 ### License
 
-@[PartChain](./LICENSE)
-
-
+[Apache License 2.0](./LICENSE)

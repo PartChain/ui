@@ -15,20 +15,22 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { AuthService } from '../user/auth/auth.service';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 /**
- * Injectable api service
+ *
  *
  * @export
  * @class ApiService
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ApiService {
   /**
-   * @constructor ApiService.
+   * @constructor ApiService (DI)
    * @param {HttpClient} httpClient
    * @param {AuthService} authService
    * @memberof ApiService
@@ -40,26 +42,27 @@ export class ApiService {
    *
    * @private
    * @static
-   * @param {*} body
+   * @template T
+   * @param {(T | null)} body
    * @return {string}
    * @memberof ApiService
    */
-  private static stringifyBody(body: any): string {
+  private static stringifyBody<T>(body: T | null): string {
     return JSON.stringify(body === null ? {} : body);
   }
 
   /**
-   * HTTP GET
+   * HTTP Get by
    *
    * @template T
    * @param {string} url
-   * @param {*} [params]
+   * @param {HttpParams} [params]
    * @param {boolean} [withCredentials=false]
    * @param {HttpHeaders} [headers]
    * @return {Observable<T>}
    * @memberof ApiService
    */
-  public get<T>(url: string, params?: any, withCredentials = false, headers?: HttpHeaders): Observable<T> {
+  public getBy<T>(url: string, params?: HttpParams, withCredentials = false, headers?: HttpHeaders): Observable<T> {
     return this.httpClient.get<T>(url + params, {
       headers: headers ? headers : this.buildHeaders(),
       withCredentials,
@@ -67,7 +70,7 @@ export class ApiService {
   }
 
   /**
-   * HTTP GET (NO PARAMS)
+   * HTTP Get
    *
    * @template T
    * @param {string} url
@@ -76,7 +79,7 @@ export class ApiService {
    * @return {Observable<T>}
    * @memberof ApiService
    */
-  public getWithNoParams<T>(url: string, withCredentials = false, headers?: HttpHeaders): Observable<T> {
+  public get<T>(url: string, withCredentials = false, headers?: HttpHeaders): Observable<T> {
     return this.httpClient.get<T>(url, {
       headers: headers ? headers : this.buildHeaders(),
       withCredentials,
@@ -84,11 +87,11 @@ export class ApiService {
   }
 
   /**
-   * HTTP POST
+   *HTTP Post
    *
    * @template T
    * @param {string} url
-   * @param {*} [body]
+   * @param {(Record<string, unknown> | unknown)} [body]
    * @param {'json'} [responseType]
    * @param {boolean} [withCredentials=false]
    * @param {HttpHeaders} [headers]
@@ -97,7 +100,7 @@ export class ApiService {
    */
   public post<T>(
     url: string,
-    body?: any,
+    body?: Record<string, unknown> | unknown,
     responseType?: 'json',
     withCredentials = false,
     headers?: HttpHeaders,
@@ -110,13 +113,13 @@ export class ApiService {
   }
 
   /**
-   * HTTP DELETE
+   *HTTP Delete
    *
    * @template T
    * @param {string} url
    * @param {boolean} [withCredentials=false]
    * @param {HttpHeaders} [headers]
-   * @return {*}  {Observable<T>}
+   * @return {Observable<T>}
    * @memberof ApiService
    */
   public delete<T>(url: string, withCredentials = false, headers?: HttpHeaders): Observable<T> {
@@ -127,45 +130,7 @@ export class ApiService {
   }
 
   /**
-   * Parse query string from given object
-   *
-   * @param {*} params
-   * @return {string}
-   * @memberof ApiService
-   */
-  public getQueryStringFromObject(params: any): string {
-    const str = [];
-    for (const p in params) {
-      if (params[p] !== null) {
-        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(params[p]));
-      }
-    }
-
-    return (str.length ? '?' : '') + str.join('&');
-  }
-
-  /**
-   * Api error handling
-   *
-   * @param {*} err
-   * @return {Observable<never>}
-   * @memberof ApiService
-   */
-  public handleError(err: any): Observable<never> {
-    let errorMessage: string;
-    if (Array.isArray(err.error.error)) {
-      errorMessage = `An error occurred: ${err.error.message}`;
-      err.error.error.forEach(message => (errorMessage = message.message));
-    } else if (err.message) {
-      errorMessage = err.message;
-    } else {
-      errorMessage = `Backend returned code ${err.status}: ${err.body.error}`;
-    }
-    return throwError(errorMessage);
-  }
-
-  /**
-   * HTTP headers builder
+   * Headers builder
    *
    * @private
    * @return {HttpHeaders}

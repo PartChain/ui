@@ -143,9 +143,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.component.html"],
             "exclude": ["**/node_modules/**"]
           }
         }
@@ -166,12 +166,6 @@
             "production": {
               "devServerTarget": "webapp:serve:production"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.component.html"]
           }
         }
       }

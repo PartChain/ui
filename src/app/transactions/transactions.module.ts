@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {TransactionsComponent} from './transactions.component';
-import {TransactionsService} from './transactions.service';
-import {CommonModule} from '@angular/common';
-import {TemplateModule} from '../shared/template.module';
+import { NgModule } from '@angular/core';
+import { TransactionsComponent } from './presentation/transactions.component';
+import { TransactionsService } from './core/transactions.service';
+import { CommonModule } from '@angular/common';
+import { TemplateModule } from '../shared/template.module';
 import { SharedModule } from '../shared/shared.module';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { icons } from './../shared/shared-icons.module';
+import { TransactionsFacade } from './abstraction/transactions.facade';
+import { TransactionsState } from './core/transactions.state';
+import { TransactionsListComponent } from './presentation/transactions-list/transactions-list.component';
+import { TransactionsRoutingModule } from './transactions.routing';
 
 /**
  *
@@ -30,17 +34,8 @@ import { icons } from './../shared/shared-icons.module';
  * @class TransactionsModule
  */
 @NgModule({
-  declarations: [
-    TransactionsComponent,
-  ],
-  imports: [
-    CommonModule,
-    TemplateModule,
-    SharedModule,
-    SvgIconsModule.forChild(icons),
-  ],
-  providers: [
-    TransactionsService
-  ]
+  declarations: [TransactionsComponent, TransactionsListComponent],
+  imports: [CommonModule, TemplateModule, SharedModule, SvgIconsModule.forChild(icons), TransactionsRoutingModule],
+  providers: [TransactionsService, TransactionsFacade, TransactionsState],
 })
-export class TransactionsModule { }
+export class TransactionsModule {}

@@ -17,8 +17,7 @@
 import { NgModule } from '@angular/core';
 import { ApiService } from './api/api.service';
 import { UserService } from './user/user.service';
-import { AuthService } from './user/auth/auth.service';
-import { RoleDirective } from './user/role.directive';
+import { AuthService } from './auth/auth.service';
 
 /**
  *
@@ -27,8 +26,6 @@ import { RoleDirective } from './user/role.directive';
  * @class CoreModule
  */
 @NgModule({
-  declarations: [RoleDirective],
   providers: [ApiService, AuthService, UserService],
-  exports: [RoleDirective],
 })
 export class CoreModule {}

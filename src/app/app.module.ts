@@ -20,29 +20,27 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpClientModule } from '@angular/common/http';
-import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
-import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { keycloakInit } from './utils/keycloak-init';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { TemplateModule } from './shared/template.module';
-import { AboutComponent } from './about/about.component';
-import { IntroductionComponent } from './introduction/introduction.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app.routing';
 import { AssetsModule } from './assets/assets.module';
-import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { TransactionsModule } from './transactions/transactions.module';
-import { KpisModule } from './kpis/kpis.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AclModule } from './acl/acl.module';
-import { NavBarComponent } from './layout/nav-bar/nav-bar.component';
-import { ResizerComponent } from './layout/resizer/resizer.component';
-import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { icons } from './shared/shared-icons.module';
+import { PageNotFoundModule } from './page-not-found/page-not-found.module';
+import { AboutModule } from './about/about.module';
+import { IntroductionModule } from './introduction/introduction.module';
+import { LayoutModule } from './layout/layout.module';
+import { SpinnerOverlayComponent } from './spinner-overlay/presentation/spinner-overlay.component';
+import { HttpErrorInterceptor } from './core/api/http-error.interceptor';
+import { NotificationService } from './shared/components/notifications/notification.service';
+import { AssetSearchModule } from './asset-search/asset-search.module';
 
 /**
  *
@@ -51,17 +49,7 @@ import { icons } from './shared/shared-icons.module';
  * @class AppModule
  */
 @NgModule({
-  declarations: [
-    AppComponent,
-    PublicLayoutComponent,
-    PrivateLayoutComponent,
-    AboutComponent,
-    IntroductionComponent,
-    PageNotFoundComponent,
-    NavBarComponent,
-    ResizerComponent,
-    SidebarComponent,
-  ],
+  declarations: [AppComponent, SpinnerOverlayComponent],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -80,12 +68,15 @@ import { icons } from './shared/shared-icons.module';
       },
     }),
     SvgIconsModule.forChild(icons),
+    LayoutModule,
+    IntroductionModule,
+    PageNotFoundModule,
+    AboutModule,
     AclModule,
     TransactionsModule,
-    KpisModule,
+    DashboardModule,
     AssetsModule,
-    SharedModule,
-    TemplateModule,
+    AssetSearchModule,
     CoreModule,
   ],
   providers: [
@@ -98,6 +89,12 @@ import { icons } from './shared/shared-icons.module';
     {
       provide: MAT_DATE_LOCALE,
       useValue: 'en-GB',
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+      deps: [NotificationService],
     },
   ],
   bootstrap: [AppComponent],

@@ -1,16 +1,17 @@
 {
   "name": "webapp",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
+    "analyze": "ng build --prod --stats-json && webpack-bundle-analyzer dist/webapp/stats.json",
     "build": "ng build",
     "build:prod": "NODE_ENV=production ng build --prod",
-    "test": "ng test",
-    "lint": "eslint --color --fix -c .eslintrc.js --ext .ts ./src/app",
     "e2e": "ng e2e",
+    "format": "prettier --config .prettierrc --write \"src/**/*.{js,ts,json,md,css,html}\"",
     "generate-icons": "svg-to-ts",
-    "stats": "webpack-bundle-analyzer dist/webapp/stats.json"
+    "lint": "eslint --color --fix -c .eslintrc.js --ext .ts ./src/app",
+    "ng": "ng",
+    "start": "ng serve",
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -76,10 +77,10 @@
     "karma-jasmine": "~4.0.1",
     "karma-jasmine-html-reporter": "^1.5.4",
     "postcss-import": "^14.0.0",
-    "postcss-loader": "^4.2.0",
+    "postcss-loader": "^4.1.0",
     "postcss-scss": "^3.0.4",
     "protractor": "~7.0.0",
-    "stylelint": "^13.11.0",
+    "stylelint": "^13.8.0",
     "stylelint-config-recommended": "^3.0.0",
     "svg-to-ts": "^5.0.0",
     "ts-node": "~9.0.0",

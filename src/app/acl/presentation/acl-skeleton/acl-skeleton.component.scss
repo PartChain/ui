@@ -1,0 +1,88 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.acl-skeleton-container {
+  @apply grid grid-cols-6 gap-2 my-10;
+}
+
+.acl-skeleton-content {
+  @apply col-span-2 block w-full h-screen overflow-auto box-border m-0;
+}
+
+.acl-skeleton-card {
+  @apply block relative p-4 bg-white text-tundora cursor-pointer hover:bg-dustyGrayShadeGallery border-solid border-l-2 border-inactive;
+}
+
+.acl-detail-skeleton-content {
+  @apply col-span-4 block w-full h-full overflow-auto box-border m-0;
+}
+
+.acl-detail-card {
+  @apply block relative p-4 bg-white text-tundora ml-2;
+}
+
+.acl-detail-header {
+  @apply flex justify-between mt-2;
+}
+
+.acl-detail-content {
+  @apply block;
+
+  section {
+    @apply my-5;
+  }
+}
+
+.mat-divider {
+  @apply border border-nepal;
+}
+
+.acl-detail-header__title,
+.acl-tabs,
+p:empty {
+  animation: loading 1.7s infinite linear;
+  background: #dedfe1;
+  background-image: linear-gradient(to right, #dedfe1 0%, #f2f3f5 20%, #dedfe1 40%, #dedfe1 100%);
+  background-repeat: no-repeat;
+}
+
+p {
+  width: 150px;
+  height: 15px;
+  margin-top: 1%;
+}
+
+.acl-detail-header__title {
+  width: 150px;
+  height: 10px;
+  margin-bottom: 1%;
+}
+
+.acl-tabs {
+  width: 100px;
+  height: 10px;
+  margin-bottom: 1%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: -100px;
+  }
+
+  100% {
+    background-position: 200px;
+  }
+}

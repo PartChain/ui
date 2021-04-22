@@ -18,16 +18,20 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { TemplateModule } from '../shared/template.module';
-import { AclListComponent } from './acl-list/acl-list.component';
-import { AclComponent } from './acl.component';
-import { AclService } from './acl.service';
-import { TabsModule } from './tabs/tabs.module';
-import { AclDetailComponent } from './acl-list/acl-detail/acl-detail.component';
-import { AclHistoryComponent } from './acl-list/acl-history/acl-history.component';
-import { RequestModalComponent } from './request-modal/request-modal.component';
-import { AclEmptyStateComponent } from './acl-empty-state/acl-empty-state.component';
+import { AclListComponent } from './presentation/acl-list/acl-list.component';
+import { AclComponent } from './presentation/acl.component';
+import { AclService } from './core/acl.service';
+import { AclDetailComponent } from './presentation/acl-list/acl-detail/acl-detail.component';
+import { AclHistoryComponent } from './presentation/acl-history/acl-history.component';
+import { RequestModalComponent } from './presentation/request-modal/request-modal.component';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { icons } from './../shared/shared-icons.module';
+import { AclFacade } from './abstraction/acl.facade';
+import { AclState } from './core/acl.state';
+import { AclTabsComponent } from './presentation/acl-tabs/acl-tabs.component';
+import { AclRoutingModule } from './acl.routing';
+import { AclEmptyStateComponent } from './presentation/acl-empty-state/acl-empty-state.component';
+import { AclSkeletonComponent } from './presentation/acl-skeleton/acl-skeleton.component';
 
 /**
  *
@@ -42,9 +46,11 @@ import { icons } from './../shared/shared-icons.module';
     AclDetailComponent,
     AclHistoryComponent,
     RequestModalComponent,
+    AclTabsComponent,
     AclEmptyStateComponent,
+    AclSkeletonComponent,
   ],
-  imports: [CommonModule, TabsModule, TemplateModule, SharedModule, SvgIconsModule.forChild(icons)],
-  providers: [AclService],
+  imports: [CommonModule, TemplateModule, SharedModule, SvgIconsModule.forChild(icons), AclRoutingModule],
+  providers: [AclState, AclFacade, AclService],
 })
 export class AclModule {}
